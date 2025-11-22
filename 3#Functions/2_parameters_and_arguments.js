@@ -1,4 +1,3 @@
-
 // Default Parameters
 function greet(name = 'Guest', greeting = 'Hello') {
   return `${greeting}, ${name}!`;
