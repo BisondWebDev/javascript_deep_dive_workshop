@@ -78,7 +78,7 @@ This project integrates concepts from all previous sections:
 
 ### Step 1: Understand the Data Structure
 
-Review [starter/data.js](starter/data.js) to understand:
+Review [starter/data.js](./starter/data.js) to understand:
 - User objects
 - Project objects
 - Task objects
@@ -86,30 +86,30 @@ Review [starter/data.js](starter/data.js) to understand:
 
 ### Step 2: Read Requirements
 
-Read [project-requirements.md](project-requirements.md) for detailed feature specifications.
+Read [project-requirements.md](./project-requirements.md) for detailed feature specifications.
 
 ### Step 3: Implement Features
 
 Work through the implementation in this order:
 
-1. **Validators** ([starter/validators.js](starter/validators.js))
+1. **Validators** ([starter/validators.js](./starter/validators.js))
    - Input validation functions
    - Type checking
    - Business rule validation
 
-2. **Utilities** ([starter/utils.js](starter/utils.js))
+2. **Utilities** ([starter/utils.js](./starter/utils.js))
    - Helper functions
    - Data transformation
    - Reusable logic
 
-3. **Task Manager** ([starter/task-manager.js](starter/task-manager.js))
+3. **Task Manager** ([starter/task-manager.js](./starter/task-manager.js))
    - Core application logic
    - CRUD operations
    - Analytics and reporting
 
 ### Step 4: Test Your Solution
 
-Run the test cases in [tests/test-cases.js](tests/test-cases.js):
+Run the test cases in [tests/test-cases.js](./tests/test-cases.js):
 
 ```bash
 node tests/test-cases.js
@@ -318,13 +318,13 @@ If you get stuck:
 
 ## Ready to Start?
 
-**Begin with:** [Project Requirements](project-requirements.md)
+**Begin with:** [Project Requirements](./project-requirements.md)
 
-Then start coding in: [starter/task-manager.js](starter/task-manager.js)
+Then start coding in: [starter/task-manager.js](./starter/task-manager.js)
 
 Good luck! This project will solidify your JavaScript fundamentals and give you a real-world example for your portfolio.
 
 ---
 
 ## Previous Section
-- [Section 5: Objects](../5#Objects/README.md)
+- [Section 5: Objects](../5%23Objects/README.md)

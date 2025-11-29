@@ -57,16 +57,16 @@ Arrays allow you to store and manipulate collections of data. You'll learn how t
 
 ## Files in This Section
 
-- [1_arrays_basic.js](1_arrays_basic.js) - Array creation, access, and corner cases
-- [2_array_methods_mutating.js](2_array_methods_mutating.js) - Methods that modify arrays
-- [3_array_methods_non_mutating.js](3_array_methods_non_mutating.js) - Functional array methods
-- [4_array_searching.js](4_array_searching.js) - Finding and checking elements
-- [5_array_testing.js](5_array_testing.js) - Testing array contents with `every()` and `some()`
-- [6_chaining_methods.js](6_chaining_methods.js) - Combining operations
-- [7_spread_operator.js](7_spread_operator.js) - Spreading and copying arrays
-- [8_array_destructuring.js](8_array_destructuring.js) - Extracting values from arrays
-- [9_exercises.js](9_exercises.js) - Practice exercises
-- [solutions.js](solutions.js) - Exercise solutions
+- [1_arrays_basic.js](./1_arrays_basic.js) - Array creation, access, and corner cases
+- [2_array_methods_mutating.js](./2_array_methods_mutating.js) - Methods that modify arrays
+- [3_array_methods_non_mutating.js](./3_array_methods_non_mutating.js) - Functional array methods
+- [4_array_searching.js](./4_array_searching.js) - Finding and checking elements
+- [5_array_testing.js](./5_array_testing.js) - Testing array contents with `every()` and `some()`
+- [6_chaining_methods.js](./6_chaining_methods.js) - Combining operations
+- [7_spread_operator.js](./7_spread_operator.js) - Spreading and copying arrays
+- [8_array_destructuring.js](./8_array_destructuring.js) - Extracting values from arrays
+- [9_exercises.js](./9_exercises.js) - Practice exercises
+- [solutions.js](./solutions.js) - Exercise solutions
 
 ## Key Concepts to Master
 
@@ -228,19 +228,19 @@ Practice what you've learned:
 - Method chaining problems
 
 Files:
-- [9_exercises.js](9_exercises.js) - Work through these exercises
-- [solutions.js](solutions.js) - Check your solutions here
+- [9_exercises.js](./9_exercises.js) - Work through these exercises
+- [solutions.js](./solutions.js) - Check your solutions here
 
 ## Learning Path
 
-1. [1_arrays_basic.js](1_arrays_basic.js) - Understand array creation and access
-2. [2_array_methods_mutating.js](2_array_methods_mutating.js) - Learn methods that change arrays
-3. [3_array_methods_non_mutating.js](3_array_methods_non_mutating.js) - Master map, filter, reduce
-4. [4_array_searching.js](4_array_searching.js) - Find elements efficiently
-5. [5_array_testing.js](5_array_testing.js) - Test array contents
-6. [6_chaining_methods.js](6_chaining_methods.js) - Combine operations
-7. [7_spread_operator.js](7_spread_operator.js) - Copy and combine arrays
-8. [8_array_destructuring.js](8_array_destructuring.js) - Extract values elegantly
+1. [1_arrays_basic.js](./1_arrays_basic.js) - Understand array creation and access
+2. [2_array_methods_mutating.js](./2_array_methods_mutating.js) - Learn methods that change arrays
+3. [3_array_methods_non_mutating.js](./3_array_methods_non_mutating.js) - Master map, filter, reduce
+4. [4_array_searching.js](./4_array_searching.js) - Find elements efficiently
+5. [5_array_testing.js](./5_array_testing.js) - Test array contents
+6. [6_chaining_methods.js](./6_chaining_methods.js) - Combine operations
+7. [7_spread_operator.js](./7_spread_operator.js) - Copy and combine arrays
+8. [8_array_destructuring.js](./8_array_destructuring.js) - Extract values elegantly
 9. Complete the exercises!
 
 ## Tips for Workshop Participants
@@ -253,7 +253,7 @@ Files:
 - Try to solve problems without looking at solutions first
 
 ## Previous Section
-- [Section 3: Functions](../3#Functions/README.md)
+- [Section 3: Functions](../3%23Functions/README.md)
 
 ## Next Section
-- [Section 5: Objects](../5#Objects/README.md)
+- [Section 5: Objects](../5%23Objects/README.md)

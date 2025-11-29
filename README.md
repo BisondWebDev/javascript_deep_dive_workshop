@@ -25,7 +25,7 @@ Each section includes:
 
 ## Sections
 
-### [1. JavaScript Fundamentals](1#JavascriptFundamentals/README.md)
+### [1. JavaScript Fundamentals](./1%23JavascriptFundamentals/README.md)
 
 Learn the core building blocks of JavaScript:
 - **Variables**: `let`, `const`, `var`, hoisting, and scope
@@ -38,11 +38,11 @@ Learn the core building blocks of JavaScript:
 - NaN, negative zero, and Object.is()
 - Type coercion and boolean conversion
 
-**Start Here:** [JavaScript Fundamentals README](1#JavascriptFundamentals/README.md)
+**Start Here:** [JavaScript Fundamentals README](./1%23JavascriptFundamentals/README.md)
 
 ---
 
-### [2. Conditional Rendering](2#ConditionalRender/README.md)
+### [2. Conditional Rendering](./2%23ConditionalRender/README.md)
 
 Master control flow and decision making:
 - If/else statements and guard clauses
@@ -58,11 +58,11 @@ Master control flow and decision making:
 - Logical operators (`&&`, `||`, `??`)
 - Avoiding nested conditionals
 
-**Start Here:** [Conditional Rendering README](2#ConditionalRender/README.md)
+**Start Here:** [Conditional Rendering README](./2%23ConditionalRender/README.md)
 
 ---
 
-### [3. Functions](3#Functions/README.md)
+### [3. Functions](./3%23Functions/README.md)
 
 Become proficient with JavaScript functions:
 - Function declarations vs expressions
@@ -78,11 +78,11 @@ Become proficient with JavaScript functions:
 - First-class functions
 - Pure functions vs side effects
 
-**Start Here:** [Functions README](3#Functions/README.md)
+**Start Here:** [Functions README](./3%23Functions/README.md)
 
 ---
 
-### [4. Arrays](4#Arrays/README.md)
+### [4. Arrays](./4%23Arrays/README.md)
 
 Master array manipulation and functional programming:
 - Array creation and access
@@ -99,11 +99,11 @@ Master array manipulation and functional programming:
 - Array destructuring patterns
 - Performance considerations
 
-**Start Here:** [Arrays README](4#Arrays/README.md)
+**Start Here:** [Arrays README](./4%23Arrays/README.md)
 
 ---
 
-### [5. Objects](5#Objects/README.md)
+### [5. Objects](./5%23Objects/README.md)
 
 Understand JavaScript objects in depth:
 - Object creation and property access
@@ -121,11 +121,11 @@ Understand JavaScript objects in depth:
 - Immutable updates
 - Object transformation patterns
 
-**Start Here:** [Objects README](5#Objects/README.md)
+**Start Here:** [Objects README](./5%23Objects/README.md)
 
 ---
 
-### [6. Capstone Project: Task Management System](6#CapstoneProject/README.md)
+### [6. Capstone Project: Task Management System](./6%23CapstoneProject/README.md)
 
 Apply everything you've learned by building a real-world application:
 - Complete task management system
@@ -148,7 +148,7 @@ Apply everything you've learned by building a real-world application:
 - Tag management system
 - User workload tracking
 
-**Start Here:** [Capstone Project README](6#CapstoneProject/README.md)
+**Start Here:** [Capstone Project README](./6%23CapstoneProject/README.md)
 
 ---
 
@@ -280,7 +280,7 @@ If you get stuck:
 
 ## Next Steps After Completion
 
-Once you've completed sections 1-5, **tackle the Capstone Project** ([Section 6](6#CapstoneProject/README.md)) to apply everything you've learned in a real-world scenario.
+Once you've completed sections 1-5, **tackle the Capstone Project** ([Section 6](./6%23CapstoneProject/README.md)) to apply everything you've learned in a real-world scenario.
 
 After finishing the entire workshop:
 
@@ -299,7 +299,7 @@ After finishing the entire workshop:
 
 Ready to begin? Start with the fundamentals:
 
-**[Begin Workshop → JavaScript Fundamentals](1#JavascriptFundamentals/README.md)**
+**[Begin Workshop → JavaScript Fundamentals](./1%23JavascriptFundamentals/README.md)**
 
 ---
 

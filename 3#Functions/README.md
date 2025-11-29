@@ -41,13 +41,13 @@ Functions let you organize and reuse code. You'll learn different ways to create
 
 ## Files in This Section
 
-- [1_basic_functions.js](1_basic_functions.js) - Declarations, expressions, and arrow functions
-- [2_parameters_and_arguments.js](2_parameters_and_arguments.js) - Working with function inputs
-- [3_return_values.js](3_return_values.js) - Returning data from functions
-- [4_callback_functions.js](4_callback_functions.js) - Functions as arguments
-- [5_function_composition.js](5_function_composition.js) - Combining functions
-- [6_exercise.js](6_exercise.js) - Practice exercises
-- [7_exercise_solution.js](7_exercise_solution.js) - Exercise solutions
+- [1_basic_functions.js](./1_basic_functions.js) - Declarations, expressions, and arrow functions
+- [2_parameters_and_arguments.js](./2_parameters_and_arguments.js) - Working with function inputs
+- [3_return_values.js](./3_return_values.js) - Returning data from functions
+- [4_callback_functions.js](./4_callback_functions.js) - Functions as arguments
+- [5_function_composition.js](./5_function_composition.js) - Combining functions
+- [6_exercise.js](./6_exercise.js) - Practice exercises
+- [7_exercise_solution.js](./7_exercise_solution.js) - Exercise solutions
 
 ## Key Concepts to Master
 
@@ -162,16 +162,16 @@ Work through the exercises to practice:
 - Understanding `this` binding
 
 Files:
-- [6_exercise.js](6_exercise.js) - Try these on your own first
-- [7_exercise_solution.js](7_exercise_solution.js) - Check your solutions
+- [6_exercise.js](./6_exercise.js) - Try these on your own first
+- [7_exercise_solution.js](./7_exercise_solution.js) - Check your solutions
 
 ## Learning Path
 
-1. Start with [1_basic_functions.js](1_basic_functions.js) - Master the syntax variations
-2. Understand [2_parameters_and_arguments.js](2_parameters_and_arguments.js) - Work with inputs
-3. Learn about [3_return_values.js](3_return_values.js) - Handle outputs
-4. Explore [4_callback_functions.js](4_callback_functions.js) - Functions as data
-5. Practice [5_function_composition.js](5_function_composition.js) - Build complex behavior
+1. Start with [1_basic_functions.js](./1_basic_functions.js) - Master the syntax variations
+2. Understand [2_parameters_and_arguments.js](./2_parameters_and_arguments.js) - Work with inputs
+3. Learn about [3_return_values.js](./3_return_values.js) - Handle outputs
+4. Explore [4_callback_functions.js](./4_callback_functions.js) - Functions as data
+5. Practice [5_function_composition.js](./5_function_composition.js) - Build complex behavior
 6. Complete the exercises to solidify your understanding
 
 ## Tips for Workshop Participants
@@ -183,7 +183,7 @@ Files:
 - Think about which functions are pure vs impure in the examples
 
 ## Previous Section
-- [Section 2: Conditional Rendering](../2#ConditionalRender/README.md)
+- [Section 2: Conditional Rendering](../2%23ConditionalRender/README.md)
 
 ## Next Section
-- [Section 4: Arrays](../4#Arrays/README.md)
+- [Section 4: Arrays](../4%23Arrays/README.md)

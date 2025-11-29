@@ -17,7 +17,7 @@ Learn about JavaScript's variable declaration methods and their important differ
 - **The Classic Loop Problem**: Why `var` in loops can cause unexpected behavior
 
 **Files:**
-- [variables.js](1#Variables/variables.js) - Variable declarations, scope, and hoisting
+- [variables.js](./1%23Variables/variables.js) - Variable declarations, scope, and hoisting
 
 ### 2. Data Types
 Deep dive into JavaScript's type system and its quirks:
@@ -31,13 +31,13 @@ Deep dive into JavaScript's type system and its quirks:
 - **Equality**: The difference between `==`, `===`, and `Object.is()`
 
 **Files:**
-- [1_primitives_values_plus_object.js](2#DataTypes/1_primitives_values_plus_object.js) - Primitive types and objects
-- [2_primitive_vs_reference_types.js](2#DataTypes/2_primitive_vs_reference_types.js) - Understanding value vs reference
-- [3_NaN_and_isNaN.js](2#DataTypes/3_NaN_and_isNaN.js) - Working with NaN
-- [4_negative_zero_and_object_dot_is.js](2#DataTypes/4_negative_zero_and_object_dot_is.js) - Edge cases in equality
-- [5_type_coercion.js](2#DataTypes/5_type_coercion.js) - Implicit and explicit type conversion
-- [6_boolean_coercion.js](2#DataTypes/6_boolean_coercion.js) - Truthy and falsy values
-- [7_eqaulity.js](2#DataTypes/7_eqaulity.js) - Different equality operators
+- [1_primitives_values_plus_object.js](./2%23DataTypes/1_primitives_values_plus_object.js) - Primitive types and objects
+- [2_primitive_vs_reference_types.js](./2%23DataTypes/2_primitive_vs_reference_types.js) - Understanding value vs reference
+- [3_NaN_and_isNaN.js](./2%23DataTypes/3_NaN_and_isNaN.js) - Working with NaN
+- [4_negative_zero_and_object_dot_is.js](./2%23DataTypes/4_negative_zero_and_object_dot_is.js) - Edge cases in equality
+- [5_type_coercion.js](./2%23DataTypes/5_type_coercion.js) - Implicit and explicit type conversion
+- [6_boolean_coercion.js](./2%23DataTypes/6_boolean_coercion.js) - Truthy and falsy values
+- [7_eqaulity.js](./2%23DataTypes/7_eqaulity.js) - Different equality operators
 
 ## Learning Path
 
@@ -63,4 +63,4 @@ Deep dive into JavaScript's type system and its quirks:
 ## Next Section
 
 Once you're comfortable with these fundamentals, move on to:
-- [Section 2: Conditional Rendering](../2#ConditionalRender/README.md)
+- [Section 2: Conditional Rendering](../2%23ConditionalRender/README.md)

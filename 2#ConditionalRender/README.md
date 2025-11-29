@@ -37,13 +37,13 @@ Conditional logic is fundamental to programming. You'll learn how to make decisi
 
 ## Files in This Section
 
-- [1_if_else.js](1_if_else.js) - If/else fundamentals, truthy/falsy values, guard clauses
-- [2_else_if_chain.js](2_else_if_chain.js) - Handling multiple conditions
-- [3_if_else_vs_switch_case.js](3_if_else_vs_switch_case.js) - Choosing the right conditional structure
-- [4_ternary_operator.js](4_ternary_operator.js) - Concise conditional expressions
-- [5_short_circuit.js](5_short_circuit.js) - Logical operators and short-circuit evaluation
-- [6_exercise.js](6_exercise.js) - Practice exercises
-- [7_exercise_solution.js](7_exercise_solution.js) - Exercise solutions
+- [1_if_else.js](./1_if_else.js) - If/else fundamentals, truthy/falsy values, guard clauses
+- [2_else_if_chain.js](./2_else_if_chain.js) - Handling multiple conditions
+- [3_if_else_vs_switch_case.js](./3_if_else_vs_switch_case.js) - Choosing the right conditional structure
+- [4_ternary_operator.js](./4_ternary_operator.js) - Concise conditional expressions
+- [5_short_circuit.js](./5_short_circuit.js) - Logical operators and short-circuit evaluation
+- [6_exercise.js](./6_exercise.js) - Practice exercises
+- [7_exercise_solution.js](./7_exercise_solution.js) - Exercise solutions
 
 ## Key Concepts to Master
 
@@ -101,15 +101,15 @@ if (amount <= 0) throw new Error("Invalid amount");
 ## Exercises
 
 This section includes practice exercises to reinforce your learning:
-- Work through [6_exercise.js](6_exercise.js) on your own
-- Check your solutions against [7_exercise_solution.js](7_exercise_solution.js)
+- Work through [6_exercise.js](./6_exercise.js) on your own
+- Check your solutions against [7_exercise_solution.js](./7_exercise_solution.js)
 - Try to solve them without looking at the solutions first!
 
 ## Learning Path
 
-1. Start with [1_if_else.js](1_if_else.js) - Understand the basics
-2. Progress through [2_else_if_chain.js](2_else_if_chain.js) and [3_if_else_vs_switch_case.js](3_if_else_vs_switch_case.js)
-3. Learn modern patterns in [4_ternary_operator.js](4_ternary_operator.js) and [5_short_circuit.js](5_short_circuit.js)
+1. Start with [1_if_else.js](./1_if_else.js) - Understand the basics
+2. Progress through [2_else_if_chain.js](./2_else_if_chain.js) and [3_if_else_vs_switch_case.js](./3_if_else_vs_switch_case.js)
+3. Learn modern patterns in [4_ternary_operator.js](./4_ternary_operator.js) and [5_short_circuit.js](./5_short_circuit.js)
 4. Practice with the exercises
 
 ## Tips for Workshop Participants
@@ -121,7 +121,7 @@ This section includes practice exercises to reinforce your learning:
 - Don't memorize - understand WHY each pattern works
 
 ## Previous Section
-- [Section 1: JavaScript Fundamentals](../1#JavascriptFundamentals/README.md)
+- [Section 1: JavaScript Fundamentals](../1%23JavascriptFundamentals/README.md)
 
 ## Next Section
-- [Section 3: Functions](../3#Functions/README.md)
+- [Section 3: Functions](../3%23Functions/README.md)

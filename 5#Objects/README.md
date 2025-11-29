@@ -62,16 +62,16 @@ Objects allow you to organize data with key-value pairs and create complex data 
 
 ## Files in This Section
 
-- [1_object_creation.js](1_object_creation.js) - Creating objects with modern syntax
-- [2_property_access.js](2_property_access.js) - Accessing and checking properties
-- [3_object_methods.js](3_object_methods.js) - Methods and `this` binding
-- [4_object_destructuring.js](4_object_destructuring.js) - Extracting object properties
-- [5_spread_operator.js](5_spread_operator.js) - Spreading and copying objects
-- [6_object_static_methods.js](6_object_static_methods.js) - Built-in Object methods
-- [7_nested_objects.js](7_nested_objects.js) - Working with nested data
-- [8_references_vs_values.js](8_references_vs_values.js) - Understanding object references
-- [9_exercises.js](9_exercises.js) - Practice exercises
-- [solutions.js](solutions.js) - Exercise solutions
+- [1_object_creation.js](./1_object_creation.js) - Creating objects with modern syntax
+- [2_property_access.js](./2_property_access.js) - Accessing and checking properties
+- [3_object_methods.js](./3_object_methods.js) - Methods and `this` binding
+- [4_object_destructuring.js](./4_object_destructuring.js) - Extracting object properties
+- [5_spread_operator.js](./5_spread_operator.js) - Spreading and copying objects
+- [6_object_static_methods.js](./6_object_static_methods.js) - Built-in Object methods
+- [7_nested_objects.js](./7_nested_objects.js) - Working with nested data
+- [8_references_vs_values.js](./8_references_vs_values.js) - Understanding object references
+- [9_exercises.js](./9_exercises.js) - Practice exercises
+- [solutions.js](./solutions.js) - Exercise solutions
 
 ## Key Concepts to Master
 
@@ -320,19 +320,19 @@ Practice object manipulation:
 - Understanding references vs values
 
 Files:
-- [9_exercises.js](9_exercises.js) - Practice problems
-- [solutions.js](solutions.js) - Solutions and explanations
+- [9_exercises.js](./9_exercises.js) - Practice problems
+- [solutions.js](./solutions.js) - Solutions and explanations
 
 ## Learning Path
 
-1. [1_object_creation.js](1_object_creation.js) - Master object creation syntax
-2. [2_property_access.js](2_property_access.js) - Learn safe property access
-3. [3_object_methods.js](3_object_methods.js) - Understand methods and `this`
-4. [4_object_destructuring.js](4_object_destructuring.js) - Extract properties elegantly
-5. [5_spread_operator.js](5_spread_operator.js) - Copy and merge objects
-6. [6_object_static_methods.js](6_object_static_methods.js) - Use built-in utilities
-7. [7_nested_objects.js](7_nested_objects.js) - Handle complex data structures
-8. [8_references_vs_values.js](8_references_vs_values.js) - Understand memory and equality
+1. [1_object_creation.js](./1_object_creation.js) - Master object creation syntax
+2. [2_property_access.js](./2_property_access.js) - Learn safe property access
+3. [3_object_methods.js](./3_object_methods.js) - Understand methods and `this`
+4. [4_object_destructuring.js](./4_object_destructuring.js) - Extract properties elegantly
+5. [5_spread_operator.js](./5_spread_operator.js) - Copy and merge objects
+6. [6_object_static_methods.js](./6_object_static_methods.js) - Use built-in utilities
+7. [7_nested_objects.js](./7_nested_objects.js) - Handle complex data structures
+8. [8_references_vs_values.js](./8_references_vs_values.js) - Understand memory and equality
 9. Complete the exercises to solidify your knowledge!
 
 ## Tips for Workshop Participants
@@ -346,7 +346,7 @@ Files:
 - Try the exercises - they cover real-world scenarios you'll encounter
 
 ## Previous Section
-- [Section 4: Arrays](../4#Arrays/README.md)
+- [Section 4: Arrays](../4%23Arrays/README.md)
 
 ## Next Steps
 
