@@ -24,8 +24,16 @@ function validateUser(userData) {
     validationErrors.push('Email is required and must be in a valid format');
   }
   // Validate role: Optional, must be one of: developer, designer, manager, admin
-  if (userData.role && !usersRoles.includes(userData.role)) {
-    validationErrors.push(`Insert a role that must be one of: ${usersRoles.join(', ')}`);
+  if (userData.role !== undefined) {
+    if (typeof userData.role !== 'string') {
+      validationErrors.push(`Role must be one of: ${usersRoles.join(', ')}`);
+    } else {
+      const trimmedRole = userData.role.trim();
+
+      if (trimmedRole === '' || !usersRoles.includes(trimmedRole)) {
+        validationErrors.push(`Role must be one of: ${usersRoles.join(', ')}`);
+      }
+    }
   }
   // Validate active: Optional, must be boolean
   if (userData.active !== undefined && typeof userData.active !== 'boolean') {
@@ -56,7 +64,6 @@ function validateUser(userData) {
  */
   
 function validateTask(taskData) {
-  // TODO: Implement validation
   // Hint: Use guard clauses for required fields
   // Hint: Use array.includes() to check valid values
   // Hint: For date validation, create a Date object and check if it's valid
@@ -116,8 +123,6 @@ function validateTask(taskData) {
  * - deadline: Optional, must be valid date string, not in the past
  */
 function validateProject(projectData) {
-  // TODO: Implement validation
-
   const validStatuses = ['active', 'on-hold', 'completed'];
   const errors = [];
 
@@ -147,7 +152,10 @@ function validateProject(projectData) {
   }
   // return valid true if there are no errors, 
   // otherwise return valid false with errors array
-  return { valid: errors.length === 0, errors: errors.length > 0 ? errors : undefined };
+  if (errors.length > 0) {
+    return { valid: false, errors };
+  }
+  return { valid: true };
 }
 
 /**
@@ -201,7 +209,18 @@ function isValidDate(dateString) {
  */
 function isDateInPast(dateString) {
   // Validate logic for checking if date is in the past
-  // create a Date object from the dateString and compare it with the current date
+  // Date-only strings should be compared at day granularity so "today" is not treated as already past.
+  const trimmedDateString = typeof dateString === 'string' ? dateString.trim() : '';
+  const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (dateOnlyPattern.test(trimmedDateString)) {
+    const [year, month, day] = trimmedDateString.split('-').map(Number);
+    const dateToCheck = Date.UTC(year, month - 1, day);
+    const now = new Date();
+    const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    return dateToCheck < today;
+  }
+
   const dateToCheck = new Date(dateString);
   const dateNow = new Date();
   return dateToCheck < dateNow;

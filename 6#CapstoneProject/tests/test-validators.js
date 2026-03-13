@@ -17,6 +17,9 @@ if (testNameFilter) {
   console.log(`Filtering tests by name: "${testNameFilter}"\n`);
 }
 
+let passedTests = 0;
+let failedTests = 0;
+
 function test(description, testFn) {
   if (testNameFilter && description !== testNameFilter) {
     return;
@@ -25,9 +28,11 @@ function test(description, testFn) {
   try {
     testFn();
     console.log(`✓ ${description}`);
+    passedTests++;
   } catch (error) {
     console.error(`✗ ${description}`);
     console.error(`  Error: ${error.message}`);
+    failedTests++;
   }
 }
 
@@ -84,7 +89,7 @@ test('Invalid date format', () => {
   assertFalse(isValidDate('2023-02-30'));
 });
 
-test('Invalid date format', () => {
+test('Invalid date format - wrong order', () => {
   assertFalse(isValidDate('22-02-2023'));
 });
 
@@ -113,6 +118,11 @@ test('Date in the future', () => {
 test('Date +2 hours is not in the past', () => {
   const twoHoursFromNow = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
   assertFalse(isDateInPast(twoHoursFromNow));
+});
+
+test('Today date-only is not in the past', () => {
+  const today = new Date().toISOString().split('T')[0];
+  assertFalse(isDateInPast(today));
 });
 
 // Validation tests for validateUser
@@ -146,8 +156,20 @@ test('Invalid user data - invalid role', () => {
   const userData = {
     id: '2',
     name: 'Jane Doe',
-    email: 'test.example@com',
+    email: 'jane.doe@example.com',
     role: 'invalid-role'
+  };
+  const result = validateUser(userData);
+  assertFalse(result.valid);
+  console.log(result.errors);
+});
+
+test('Invalid user data - empty role', () => {
+  const userData = {
+    id: '2b',
+    name: 'Jane Doe',
+    email: 'jane.doe@example.com',
+    role: ''
   };
   const result = validateUser(userData);
   assertFalse(result.valid);
@@ -260,9 +282,8 @@ test('Invalid task data - missing required fields', () => {
   const taskData = {
     id: '',
     title: '',
-    assignedTo: '',
-    dueDate: 'invalid-date',
-    status: 'invalid-status'
+    projectId: '',
+    assigneeId: 'user-1'
   };
   const result = validateTask(taskData);
   assertFalse(result.valid);
@@ -270,11 +291,15 @@ test('Invalid task data - missing required fields', () => {
 });
 
 test('Invalid task data - invalid status', () => {
+  const futureDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
   const taskData = {
     id: '2',
     title: 'Test task',
-    assignedTo: '1',
-    dueDate: '2023-12-31',
+    projectId: 'proj-1',
+    assigneeId: 'user-1',
+    dueDate: futureDate,
     status: 'not-a-valid-status'
   };
   const result = validateTask(taskData);
@@ -286,9 +311,10 @@ test('Invalid task data - due date in the past', () => {
   const taskData = {
     id: '3',
     title: 'Past task',
-    assignedTo: '1',
-    dueDate: '2020-01-01',
-    status: 'pending'
+    projectId: 'proj-1',
+    assigneeId: 'user-1',
+    status: 'todo',
+    dueDate: '2020-01-01'
   };
   const result = validateTask(taskData);
   assertFalse(result.valid);
@@ -296,11 +322,15 @@ test('Invalid task data - due date in the past', () => {
 }); 
 
 test('Invalid task data - missing title', () => {
+  const futureDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
   const taskData = {
     id: '4',
-    assignedTo: '1',
-    dueDate: '2023-12-31',
-    status: 'pending'
+    projectId: 'proj-1',
+    assigneeId: 'user-1',
+    dueDate: futureDate,
+    status: 'todo'
   };
   const result = validateTask(taskData);
   assertFalse(result.valid);
@@ -308,12 +338,16 @@ test('Invalid task data - missing title', () => {
 }); 
 
 test('Invalid task data - title too long', () => {
+  const futureDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
   const taskData = {
     id: '5',
-    title: 'A'.repeat(101),
-    assignedTo: '1',
-    dueDate: '2023-12-31',
-    status: 'pending'
+    title: 'A'.repeat(201),
+    projectId: 'proj-1',
+    assigneeId: 'user-1',
+    dueDate: futureDate,
+    status: 'todo'
   };
   const result = validateTask(taskData);
   assertFalse(result.valid);
@@ -336,6 +370,7 @@ test('Valid project data', () => {
   };
   const result = validateProject(projectData);
   assertTrue(result.valid);
+  assertFalse(Object.prototype.hasOwnProperty.call(result, 'errors'));
 });
 
 test('Invalid project data - missing required fields', () => {
@@ -417,4 +452,11 @@ test('Invalid project data - empty deadline', () => {
 });
 
 
-console.log('\nAll tests completed.');
+console.log('\n=== Summary ===');
+console.log(`Passed: ${passedTests}`);
+console.log(`Failed: ${failedTests}`);
+console.log(`Total: ${passedTests + failedTests}`);
+
+if (failedTests > 0) {
+  process.exitCode = 1;
+}
