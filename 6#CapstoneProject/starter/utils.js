@@ -12,9 +12,10 @@
  * Hint: You can also use Date.now() for uniqueness
  */
 function generateId(prefix = 'id') {
-  // TODO: Implement ID generation
   // Approach 1: prefix + timestamp + random string
   // Approach 2: prefix + random string
+  const uniqueString = Date.now().toString(36) + Math.random().toString(36).substring(2);
+  return `${prefix}-${uniqueString}`;
 }
 
 /**
@@ -29,11 +30,29 @@ function generateId(prefix = 'id') {
  * formatDate('2024-01-15T10:00:00Z', 'relative') => '5 days ago'
  */
 function formatDate(dateString, format = 'short') {
-  // TODO: Implement date formatting
   // Hint: Create a Date object from the string
+  const date = new Date(dateString);
   // Hint: For 'short', use date.toLocaleDateString()
+  if (format === 'short') {
+    return date.toLocaleDateString();
+  }
   // Hint: For 'long', use date.toLocaleDateString() with options
+  if (format === 'long') {
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
   // Hint: For 'relative', calculate difference from now
+  if (format === 'relative') {
+    const now = new Date();
+    const diff = now - date;  // Positive if past, negative if future 
+    const diffDays = Math.round(diff / (1000 * 60 * 60 * 24));
+    if (diffDays > 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    } else if (diffDays < 0) {
+      return `in ${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? 's' : ''}`;
+    } else {
+      return 'today';
+    }
+  }
 }
 
 /**
@@ -44,7 +63,9 @@ function formatDate(dateString, format = 'short') {
  * Hint: Compare the date with the current date
  */
 function isOverdue(dueDate) {
-  // TODO: Implement overdue check
+  const now = new Date();
+  const due = new Date(dueDate);
+  return due < now;
 }
 
 /**
@@ -55,8 +76,14 @@ function isOverdue(dueDate) {
  * Use this for sorting by priority
  */
 function priorityValue(priority) {
-  // TODO: Implement priority mapping
   // low => 1, medium => 2, high => 3, urgent => 4
+  const priorityMapping = {
+    low: 1,
+    medium: 2,
+    high: 3,
+    urgent: 4
+  };
+  return priorityMapping[priority.toLowerCase()] || 0; // Return 0 for unknown priorities
 }
 
 /**
@@ -68,9 +95,24 @@ function priorityValue(priority) {
  * Or implement recursive cloning for better handling
  */
 function deepClone(obj) {
-  // TODO: Implement deep clone
   // Simple approach: JSON.parse(JSON.stringify(obj))
   // Note: This won't work with functions, undefined, or dates
+
+  if (obj === null || typeof obj !== 'object') return obj; // primitives, null, undefined
+  if (obj instanceof Date) return new Date(obj);           // dates
+
+  // Recursive cases
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item));               // arrays
+  }
+
+  const clonedObj = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      clonedObj[key] = deepClone(obj[key]);               // recursive clone for nested objects
+    }
+  }
+  return clonedObj; 
 }
 
 /**
@@ -80,9 +122,12 @@ function deepClone(obj) {
  * @returns {number} - Number of days (can be negative)
  */
 function daysBetween(date1, date2) {
-  // TODO: Implement days calculation
   // Hint: Convert to Date objects, subtract, divide by milliseconds in a day
   // One day = 24 * 60 * 60 * 1000 milliseconds
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diff = d2 - d1;
+  return Math.round(diff / (1000 * 60 * 60 * 24));
 }
 
 /**
@@ -91,8 +136,9 @@ function daysBetween(date1, date2) {
  * @returns {number} - Days until date (negative if past)
  */
 function daysUntil(dateString) {
-  // TODO: Implement days until
   // Hint: Use daysBetween with new Date() and the provided date
+  const now = new Date();
+  return daysBetween(now.toISOString(), dateString);
 }
 
 /**
@@ -101,7 +147,7 @@ function daysUntil(dateString) {
  * @returns {string} - Normalized string
  */
 function normalizeString(str) {
-  // TODO: Implement string normalization
+  return str.trim().toLowerCase();
 }
 
 /**
@@ -110,8 +156,11 @@ function normalizeString(str) {
  * @returns {boolean} - true if empty object
  */
 function isEmptyObject(obj) {
-  // TODO: Implement empty object check
-  // Hint: Check if it's an object, then check Object.keys(obj).length
+  // Hint: Check if it's an object and not null
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    return Object.keys(obj).length === 0;
+  }
+  return false;
 }
 
 /**
@@ -127,8 +176,10 @@ function isEmptyObject(obj) {
  * Or use optional chaining if you want to make it simple
  */
 function getNestedValue(obj, path, defaultValue = undefined) {
-  // TODO: Implement nested value getter
   // Hint: path.split('.').reduce((current, key) => current?.[key], obj)
+  return path.split('.').reduce((current, key) => {
+    return current && current[key] !== undefined ? current[key] : defaultValue;
+  }, obj);
 }
 
 /**
@@ -143,6 +194,14 @@ function getNestedValue(obj, path, defaultValue = undefined) {
 function groupBy(array, key) {
   // TODO: Implement groupBy
   // Hint: Use reduce to build the grouped object
+  return array.reduce((acc, item) => {
+    const groupKey = item[key];
+    if (!acc[groupKey]) {
+      acc[groupKey] = [];
+    }
+    acc[groupKey].push(item);
+    return acc;
+  }, {});
 }
 
 /**
@@ -154,8 +213,12 @@ function groupBy(array, key) {
  * Advanced: Only implement if you're comfortable with closures and setTimeout
  */
 function debounce(func, delay) {
-  // OPTIONAL: Implement debounce
-  // This is more advanced - skip if you're not comfortable yet
+  let timer;
+
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  }
 }
 
 // Export functions
