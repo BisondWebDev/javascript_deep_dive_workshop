@@ -1,6 +1,28 @@
 // Utility functions for the Task Management System
 // Your job: Implement these utility functions
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function getUtcMidnightTimestamp(value) {
+  const normalizedValue = typeof value === 'string' ? value.trim() : value;
+
+  if (typeof normalizedValue === 'string' && DATE_ONLY_PATTERN.test(normalizedValue)) {
+    const [year, month, day] = normalizedValue.split('-').map(Number);
+    return Date.UTC(year, month - 1, day);
+  }
+
+  const date = normalizedValue instanceof Date
+    ? new Date(normalizedValue.getTime())
+    : new Date(normalizedValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return NaN;
+  }
+
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
 /**
  * Generates a unique ID with a prefix
  * @param {string} prefix - Prefix for the ID (e.g., 'task', 'user', 'proj')
@@ -12,9 +34,10 @@
  * Hint: You can also use Date.now() for uniqueness
  */
 function generateId(prefix = 'id') {
-  // TODO: Implement ID generation
   // Approach 1: prefix + timestamp + random string
   // Approach 2: prefix + random string
+  const uniqueString = Date.now().toString(36) + Math.random().toString(36).substring(2);
+  return `${prefix}-${uniqueString}`;
 }
 
 /**
@@ -29,11 +52,39 @@ function generateId(prefix = 'id') {
  * formatDate('2024-01-15T10:00:00Z', 'relative') => '5 days ago'
  */
 function formatDate(dateString, format = 'short') {
-  // TODO: Implement date formatting
+  if (format !== 'short' && format !== 'long' && format !== 'relative') {
+    throw new Error(`Unsupported date format: ${format}`);
+  }
+
   // Hint: Create a Date object from the string
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Invalid Date';
+  }
+
   // Hint: For 'short', use date.toLocaleDateString()
+  if (format === 'short') {
+    return date.toLocaleDateString();
+  }
   // Hint: For 'long', use date.toLocaleDateString() with options
+  if (format === 'long') {
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  }
   // Hint: For 'relative', calculate difference from now
+  if (format === 'relative') {
+    const diffDays = daysBetween(date, new Date());
+
+    if (diffDays > 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    }
+
+    if (diffDays < 0) {
+      return `in ${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? 's' : ''}`;
+    }
+
+    return 'today';
+  }
 }
 
 /**
@@ -44,7 +95,9 @@ function formatDate(dateString, format = 'short') {
  * Hint: Compare the date with the current date
  */
 function isOverdue(dueDate) {
-  // TODO: Implement overdue check
+  const now = new Date();
+  const due = new Date(dueDate);
+  return due < now;
 }
 
 /**
@@ -55,8 +108,14 @@ function isOverdue(dueDate) {
  * Use this for sorting by priority
  */
 function priorityValue(priority) {
-  // TODO: Implement priority mapping
   // low => 1, medium => 2, high => 3, urgent => 4
+  const priorityMapping = {
+    low: 1,
+    medium: 2,
+    high: 3,
+    urgent: 4
+  };
+  return priorityMapping[priority.toLowerCase()] || 0; // Return 0 for unknown priorities
 }
 
 /**
@@ -68,9 +127,24 @@ function priorityValue(priority) {
  * Or implement recursive cloning for better handling
  */
 function deepClone(obj) {
-  // TODO: Implement deep clone
   // Simple approach: JSON.parse(JSON.stringify(obj))
   // Note: This won't work with functions, undefined, or dates
+
+  if (obj === null || typeof obj !== 'object') return obj; // primitives, null, undefined
+  if (obj instanceof Date) return new Date(obj);           // dates
+
+  // Recursive cases
+  if (Array.isArray(obj)) {
+    return obj.map(item => deepClone(item));               // arrays
+  }
+
+  const clonedObj = Object.create(Object.getPrototypeOf(obj));
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      clonedObj[key] = deepClone(obj[key]);               // recursive clone for nested objects
+    }
+  }
+  return clonedObj; 
 }
 
 /**
@@ -80,9 +154,11 @@ function deepClone(obj) {
  * @returns {number} - Number of days (can be negative)
  */
 function daysBetween(date1, date2) {
-  // TODO: Implement days calculation
   // Hint: Convert to Date objects, subtract, divide by milliseconds in a day
   // One day = 24 * 60 * 60 * 1000 milliseconds
+  const d1 = getUtcMidnightTimestamp(date1);
+  const d2 = getUtcMidnightTimestamp(date2);
+  return Math.trunc((d2 - d1) / MILLISECONDS_PER_DAY);
 }
 
 /**
@@ -91,8 +167,8 @@ function daysBetween(date1, date2) {
  * @returns {number} - Days until date (negative if past)
  */
 function daysUntil(dateString) {
-  // TODO: Implement days until
   // Hint: Use daysBetween with new Date() and the provided date
+  return daysBetween(new Date(), dateString);
 }
 
 /**
@@ -101,7 +177,7 @@ function daysUntil(dateString) {
  * @returns {string} - Normalized string
  */
 function normalizeString(str) {
-  // TODO: Implement string normalization
+  return str.trim().toLowerCase();
 }
 
 /**
@@ -110,8 +186,11 @@ function normalizeString(str) {
  * @returns {boolean} - true if empty object
  */
 function isEmptyObject(obj) {
-  // TODO: Implement empty object check
-  // Hint: Check if it's an object, then check Object.keys(obj).length
+  // Hint: Check if it's an object and not null
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    return Object.keys(obj).length === 0;
+  }
+  return false;
 }
 
 /**
@@ -127,8 +206,10 @@ function isEmptyObject(obj) {
  * Or use optional chaining if you want to make it simple
  */
 function getNestedValue(obj, path, defaultValue = undefined) {
-  // TODO: Implement nested value getter
   // Hint: path.split('.').reduce((current, key) => current?.[key], obj)
+  return path.split('.').reduce((current, key) => {
+    return current && current[key] !== undefined ? current[key] : defaultValue;
+  }, obj);
 }
 
 /**
@@ -141,8 +222,17 @@ function getNestedValue(obj, path, defaultValue = undefined) {
  * Returns: { a: [{type: 'a'}, {type: 'a'}], b: [{type: 'b'}] }
  */
 function groupBy(array, key) {
-  // TODO: Implement groupBy
   // Hint: Use reduce to build the grouped object
+  return array.reduce((acc, item) => {
+    const groupKey = item[key];
+
+    if (!Object.prototype.hasOwnProperty.call(acc, groupKey)) {
+      acc[groupKey] = [];
+    }
+
+    acc[groupKey].push(item);
+    return acc;
+  }, Object.create(null));
 }
 
 /**
@@ -154,8 +244,19 @@ function groupBy(array, key) {
  * Advanced: Only implement if you're comfortable with closures and setTimeout
  */
 function debounce(func, delay) {
-  // OPTIONAL: Implement debounce
-  // This is more advanced - skip if you're not comfortable yet
+  let timer;
+  let lastResult;
+
+  return function(...args) {
+    const context = this;
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      lastResult = func.apply(context, args);
+    }, delay);
+
+    return lastResult;
+  };
 }
 
 // Export functions
