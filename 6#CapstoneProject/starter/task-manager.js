@@ -1,8 +1,8 @@
 // Task Management System - Main Implementation
 // Import data and utilities (uncomment when ready to test)
-// const { users, projects, tasks } = require('./data');
-// const { validateUser, validateTask, validateProject } = require('./validators');
-// const { generateId, isOverdue, priorityValue, deepClone } = require('./utils');
+const { users, projects, tasks } = require('./data');
+const { validateUser, validateTask, validateProject } = require('./validators');
+const { generateId, isOverdue, priorityValue, deepClone, findTaskBy } = require('./utils');
 
 // For now, we'll work with the sample data directly
 let users = [];
@@ -25,7 +25,24 @@ let tasks = [];
  * 6. Return the new task
  */
 function createTask(taskData) {
-  // TODO: Implement task creation
+  // 1. Validate the task data (use validateTask from validators.js)
+  validateTask(taskData);
+  // 2. Generate a unique ID (use generateId from utils.js)
+  // 3. Set default values: status='todo', tags=[], completedAt=null
+  // 4. Add timestamps: createdAt and updatedAt (use new Date().toISOString())
+  // 5. Add task to the tasks array
+  const newTask = {
+    id: generateId(),
+    ...taskData,
+    status: 'todo',
+    tags: [],
+    completedAt: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  tasks.push(newTask);
+  // 6. Return the new task
+  return newTask;
 }
 
 /**
@@ -45,7 +62,30 @@ function createTask(taskData) {
  * 8. Return the updated task
  */
 function updateTask(taskId, updates) {
-  // TODO: Implement task update
+ // 1. Find the task by ID
+ const task = findTaskBy('id', taskId);
+ // 2. If not found, throw an error
+ if (!task) {
+   throw new Error('Task not found');
+ }
+ // 3. Validate updates (you can reuse validateTask)
+ validateTask(updates);
+ // 4. Create updated task object (use spread operator)
+ const updatedTask = {
+   ...task,
+   ...updates,
+   updatedAt: new Date().toISOString(),
+ };
+ // 5. Update the updatedAt timestamp
+ updatedTask.completedAt = new Date().toISOString();
+ // 6. If status changed to 'done', set completedAt
+  if (updates.status === 'done' ) {
+    updatedTask.completedAt = new Date().toISOString();
+  }
+ // 7. Update the task in the tasks array (immutably!)
+ tasks = tasks.map(t => t.id === taskId ? updatedTask : t);
+ // 8. Return the updated task
+ return updatedTask;
 }
 
 /**
@@ -56,7 +96,13 @@ function updateTask(taskId, updates) {
  * Hint: Filter out the task with the given ID
  */
 function deleteTask(taskId) {
-  // TODO: Implement task deletion
+  const task = findTaskBy('id', taskId);
+  if (!task) {
+    throw new Error('Task not found');
+  }
+  // remove the task from the array
+  tasks = tasks.filter(t => t.id !== taskId);
+  return true; 
 }
 
 /**
@@ -67,7 +113,8 @@ function deleteTask(taskId) {
  * Hint: Use array.find()
  */
 function getTaskById(taskId) {
-  // TODO: Implement get by ID
+  const task = findTaskBy('id', taskId);
+  return task || null;
 }
 
 // ==================== FILTERING & SEARCHING ====================
@@ -88,8 +135,28 @@ function getTaskById(taskId) {
  * Hint: Chain filter() operations or use a single filter with multiple conditions
  */
 function getTasks(filters = {}) {
-  // TODO: Implement filtering
-  // Start with all tasks, then apply each filter if provided
+    // Start with all tasks, then apply each filter if provided
+    return tasks.filter(task => {
+      if (filters.status && task.status !== filters.status) {
+        return false;
+      }
+      if (filters.priority && task.priority !== filters.priority) {
+        return false;
+      }
+      if (filters.assigneeId && task.assigneeId !== filters.assigneeId) {
+        return false;
+      }
+      if (filters.projectId && task.projectId !== filters.projectId) {
+        return false;
+      }
+      if (filters.tag && !task.tags.includes(filters.tag)) {
+        return false;
+      }
+      if (filters.overdue && !isOverdue(task)) {
+        return false;
+      }
+      return true; // If it passes all filters, include the task
+    });
 }
 
 /**
@@ -101,7 +168,11 @@ function getTasks(filters = {}) {
  * Hint: Use array.filter() and string.includes()
  */
 function searchTasks(keyword) {
-  // TODO: Implement search
+  const lowerKeyword = keyword.toLowerCase();
+  return tasks.filter(task => 
+    task.title.toLowerCase().includes(lowerKeyword) || 
+    task.description.toLowerCase().includes(lowerKeyword)
+  );
 }
 
 /**
@@ -112,7 +183,7 @@ function searchTasks(keyword) {
  * Hint: Use isOverdue() from utils.js
  */
 function getOverdueTasks() {
-  // TODO: Implement overdue tasks
+  return tasks.filter(task => task.status !== 'done' && isOverdue(task.dueDate));  
 }
 
 // ==================== SORTING ====================
@@ -142,7 +213,7 @@ function sortTasks(tasks, sortBy, order = 'asc') {
  * Hint: Filter tasks by projectId
  */
 function getTasksByProject(projectId) {
-  // TODO: Implement project tasks
+  return tasks.filter(task => task.projectId === projectId);
 }
 
 /**
@@ -153,7 +224,7 @@ function getTasksByProject(projectId) {
  * Hint: Filter tasks by assigneeId
  */
 function getTasksByUser(userId) {
-  // TODO: Implement user tasks
+  return tasks.filter(task => task.assigneeId === userId);
 }
 
 /**
@@ -167,7 +238,13 @@ function getTasksByUser(userId) {
  * - completedAt is between startDate and endDate
  */
 function getCompletedTasks(startDate, endDate) {
-  // TODO: Implement completed tasks in range
+  const start = new Date(startDate).getTime();
+  const end = new Date(endDate).getTime();
+  return tasks.filter(task => {
+    if (task.status !== 'done' || !task.completedAt) return false;
+    const completedTime = new Date(task.completedAt).getTime();
+    return completedTime >= start && completedTime <= end;
+  });
 }
 
 /**
@@ -179,7 +256,13 @@ function getCompletedTasks(startDate, endDate) {
  * Hint: Filter tasks where dueDate is between now and N days from now
  */
 function getUpcomingTasks(days) {
-  // TODO: Implement upcoming tasks
+  const now = Date.now();
+  const future = now + days * 24 * 60 * 60 * 1000;
+  return tasks.filter(task => {
+    if (!task.dueDate) return false;
+    const dueTime = new Date(task.dueDate).getTime();
+    return dueTime >= now && dueTime <= future;
+  });
 }
 
 // ==================== GROUPING ====================
@@ -194,7 +277,14 @@ function getUpcomingTasks(days) {
  * Hint: Use reduce() to build the grouped object
  */
 function groupTasksByStatus(tasks) {
-  // TODO: Implement grouping by status
+  
+  return tasks.reduce((groups, task) => {
+    if (!groups[task.status]) {
+      groups[task.status] = [];
+    }
+    groups[task.status].push(task);
+    return groups;
+  }, {});
 }
 
 /**
@@ -205,7 +295,13 @@ function groupTasksByStatus(tasks) {
  * Hint: Similar to groupTasksByStatus
  */
 function groupTasksByPriority(tasks) {
-  // TODO: Implement grouping by priority
+  return tasks.reduce((groups, task) => {
+    if (!groups[task.priority]) {
+      groups[task.priority] = [];
+    }
+    groups[task.priority].push(task);
+    return groups;
+  }, {});
 }
 
 // ==================== ANALYTICS & STATS ====================
@@ -231,7 +327,28 @@ function groupTasksByPriority(tasks) {
  * Hint: completionRate = done / total
  */
 function getProjectStats(projectId) {
-  // TODO: Implement project statistics
+  const projectTasks = getTasksByProject(projectId);
+  const total = projectTasks.length;
+  const todo = projectTasks.filter(task => task.status === 'todo').length;
+  const inProgress = projectTasks.filter(task => task.status === 'in-progress').length;
+  const done = projectTasks.filter(task => task.status === 'done').length;
+  const blocked = projectTasks.filter(task => task.status === 'blocked').length;
+  const completionRate = total === 0 ? 0 : done / total;
+  const overdue = projectTasks.filter(task => {
+    if (!task.dueDate) return false;
+    const dueTime = new Date(task.dueDate).getTime();
+    return dueTime < Date.now() && task.status !== 'done';
+  }).length;
+
+  return {
+    total,
+    todo,
+    inProgress,
+    done,
+    blocked,
+    completionRate,
+    overdue
+  };
 }
 
 /**
@@ -251,7 +368,27 @@ function getProjectStats(projectId) {
  * }
  */
 function getUserWorkload(userId) {
-  // TODO: Implement user workload
+  const userTasks = getTasksByUser(userId);
+  const assignedTasks = userTasks.length;
+  const completedTasks = userTasks.filter(task => task.status === 'done').length;
+  const inProgressTasks = userTasks.filter(task => task.status === 'in-progress').length;
+  const todoTasks = userTasks.filter(task => task.status === 'todo').length;
+  const totalEstimatedHours = userTasks.reduce((sum, task) => sum + (task.estimatedHours || 0), 0);
+  const overdueTasksCount = userTasks.filter(task => {
+    if (!task.dueDate) return false;
+    const dueTime = new Date(task.dueDate).getTime();
+    return dueTime < Date.now() && task.status !== 'done';
+  }).length;
+
+  return {
+    userId,
+    assignedTasks,
+    completedTasks,
+    inProgressTasks,
+    todoTasks,
+    totalEstimatedHours,
+    overdueTasksCount
+  };
 }
 
 /**
@@ -263,7 +400,9 @@ function getUserWorkload(userId) {
  * Hint: Handle empty array case
  */
 function calculateCompletionRate(tasks) {
-  // TODO: Implement completion rate
+  const total = tasks.length;
+  const done = tasks.filter(task => task.status === 'done').length;
+  return total === 0 ? 0 : done / total;
 }
 
 // ==================== TAG OPERATIONS ====================
@@ -276,7 +415,8 @@ function calculateCompletionRate(tasks) {
  * Hint: Filter tasks where tags array includes the tag
  */
 function getTasksByTag(tag) {
-  // TODO: Implement get by tag
+  const normalizedTag = tag.toLowerCase();
+  return tasks.filter(task => task.tags && task.tags.includes(normalizedTag));
 }
 
 /**
@@ -291,7 +431,16 @@ function getTasksByTag(tag) {
  * - Update updatedAt timestamp
  */
 function addTagToTask(taskId, tag) {
-  // TODO: Implement add tag
+  const task = findTaskBy('id', taskId);
+  if (!task) {
+    throw new Error('Task not found');
+  }
+  const normalizedTag = tag.toLowerCase();
+  if (!task.tags.includes(normalizedTag)) {
+    task.tags.push(normalizedTag);
+    task.updatedAt = new Date().toISOString();
+  }
+  return task;
 }
 
 /**
@@ -303,7 +452,14 @@ function addTagToTask(taskId, tag) {
  * Hint: Filter out the tag from the tags array
  */
 function removeTagFromTask(taskId, tag) {
-  // TODO: Implement remove tag
+  const task = findTaskBy('id', taskId);
+  if (!task) {
+    throw new Error('Task not found');
+  }
+  const normalizedTag = tag.toLowerCase();
+  task.tags = task.tags.filter(t => t !== normalizedTag);
+  task.updatedAt = new Date().toISOString();
+  return task;
 }
 
 // ==================== EXPORTS ====================
