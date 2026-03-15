@@ -1,6 +1,28 @@
 // Utility functions for the Task Management System
 // Your job: Implement these utility functions
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
+function getUtcMidnightTimestamp(value) {
+  const normalizedValue = typeof value === 'string' ? value.trim() : value;
+
+  if (typeof normalizedValue === 'string' && DATE_ONLY_PATTERN.test(normalizedValue)) {
+    const [year, month, day] = normalizedValue.split('-').map(Number);
+    return Date.UTC(year, month - 1, day);
+  }
+
+  const date = normalizedValue instanceof Date
+    ? new Date(normalizedValue.getTime())
+    : new Date(normalizedValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return NaN;
+  }
+
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
 /**
  * Generates a unique ID with a prefix
  * @param {string} prefix - Prefix for the ID (e.g., 'task', 'user', 'proj')
@@ -30,8 +52,17 @@ function generateId(prefix = 'id') {
  * formatDate('2024-01-15T10:00:00Z', 'relative') => '5 days ago'
  */
 function formatDate(dateString, format = 'short') {
+  if (format !== 'short' && format !== 'long' && format !== 'relative') {
+    throw new Error(`Unsupported date format: ${format}`);
+  }
+
   // Hint: Create a Date object from the string
   const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Invalid Date';
+  }
+
   // Hint: For 'short', use date.toLocaleDateString()
   if (format === 'short') {
     return date.toLocaleDateString();
@@ -42,16 +73,17 @@ function formatDate(dateString, format = 'short') {
   }
   // Hint: For 'relative', calculate difference from now
   if (format === 'relative') {
-    const now = new Date();
-    const diff = now - date;  // Positive if past, negative if future 
-    const diffDays = Math.round(diff / (1000 * 60 * 60 * 24));
+    const diffDays = daysBetween(date, new Date());
+
     if (diffDays > 0) {
       return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    } else if (diffDays < 0) {
-      return `in ${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? 's' : ''}`;
-    } else {
-      return 'today';
     }
+
+    if (diffDays < 0) {
+      return `in ${Math.abs(diffDays)} day${Math.abs(diffDays) > 1 ? 's' : ''}`;
+    }
+
+    return 'today';
   }
 }
 
@@ -106,9 +138,9 @@ function deepClone(obj) {
     return obj.map(item => deepClone(item));               // arrays
   }
 
-  const clonedObj = {};
+  const clonedObj = Object.create(Object.getPrototypeOf(obj));
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       clonedObj[key] = deepClone(obj[key]);               // recursive clone for nested objects
     }
   }
@@ -124,10 +156,9 @@ function deepClone(obj) {
 function daysBetween(date1, date2) {
   // Hint: Convert to Date objects, subtract, divide by milliseconds in a day
   // One day = 24 * 60 * 60 * 1000 milliseconds
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diff = d2 - d1;
-  return Math.round(diff / (1000 * 60 * 60 * 24));
+  const d1 = getUtcMidnightTimestamp(date1);
+  const d2 = getUtcMidnightTimestamp(date2);
+  return Math.trunc((d2 - d1) / MILLISECONDS_PER_DAY);
 }
 
 /**
@@ -137,8 +168,7 @@ function daysBetween(date1, date2) {
  */
 function daysUntil(dateString) {
   // Hint: Use daysBetween with new Date() and the provided date
-  const now = new Date();
-  return daysBetween(now.toISOString(), dateString);
+  return daysBetween(new Date(), dateString);
 }
 
 /**
@@ -192,16 +222,17 @@ function getNestedValue(obj, path, defaultValue = undefined) {
  * Returns: { a: [{type: 'a'}, {type: 'a'}], b: [{type: 'b'}] }
  */
 function groupBy(array, key) {
-  // TODO: Implement groupBy
   // Hint: Use reduce to build the grouped object
   return array.reduce((acc, item) => {
     const groupKey = item[key];
-    if (!acc[groupKey]) {
+
+    if (!Object.prototype.hasOwnProperty.call(acc, groupKey)) {
       acc[groupKey] = [];
     }
+
     acc[groupKey].push(item);
     return acc;
-  }, {});
+  }, Object.create(null));
 }
 
 /**
@@ -214,11 +245,18 @@ function groupBy(array, key) {
  */
 function debounce(func, delay) {
   let timer;
+  let lastResult;
 
   return function(...args) {
+    const context = this;
+
     clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
-  }
+    timer = setTimeout(() => {
+      lastResult = func.apply(context, args);
+    }, delay);
+
+    return lastResult;
+  };
 }
 
 // Export functions

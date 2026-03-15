@@ -61,8 +61,76 @@ function assertEquals(actual, expected, message) {
   }
 }
 
+function assertThrows(fn, expectedMessage) {
+  let thrownError;
+
+  try {
+    fn();
+  } catch (error) {
+    thrownError = error;
+  }
+
+  if (!thrownError) {
+    throw new Error('Expected function to throw an error');
+  }
+
+  if (expectedMessage && thrownError.message !== expectedMessage) {
+    throw new Error(`Expected error "${expectedMessage}", got "${thrownError.message}"`);
+  }
+}
+
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function waitFor(condition, timeoutMs = 250, intervalMs = 10) {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt <= timeoutMs) {
+    if (condition()) {
+      return;
+    }
+
+    await wait(intervalMs);
+  }
+
+  throw new Error('Timed out waiting for the expected condition');
+}
+
+async function withMockedNow(isoString, callback) {
+  const RealDate = Date;
+  const fixedTime = new RealDate(isoString).getTime();
+
+  class MockDate extends RealDate {
+    constructor(...args) {
+      if (args.length === 0) {
+        super(fixedTime);
+        return;
+      }
+
+      super(...args);
+    }
+
+    static now() {
+      return fixedTime;
+    }
+
+    static parse(value) {
+      return RealDate.parse(value);
+    }
+
+    static UTC(...args) {
+      return RealDate.UTC(...args);
+    }
+  }
+
+  global.Date = MockDate;
+
+  try {
+    await callback();
+  } finally {
+    global.Date = RealDate;
+  }
 }
 
 async function runTests() {
@@ -109,6 +177,19 @@ async function runTests() {
   await test('formatDate returns future relative days', () => {
     const threeDaysAhead = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
     assertEquals(formatDate(threeDaysAhead, 'relative'), 'in 3 days');
+  });
+
+  await test('formatDate uses day-level relative comparisons near day boundaries', async () => {
+    await withMockedNow('2024-01-01T23:00:00Z', () => {
+      assertEquals(formatDate('2024-01-02T01:00:00Z', 'relative'), 'in 1 day');
+    });
+  });
+
+  await test('formatDate throws for unsupported formats', () => {
+    assertThrows(
+      () => formatDate('2024-01-15T10:00:00Z', 'medium'),
+      'Unsupported date format: medium'
+    );
   });
 
   console.log('=== isOverdue ===');
@@ -177,6 +258,30 @@ async function runTests() {
     assertTrue(clone.createdAt instanceof Date);
   });
 
+  await test('deepClone supports objects with a shadowed hasOwnProperty property', () => {
+    const original = {
+      hasOwnProperty: 'shadowed',
+      nested: { count: 1 }
+    };
+    const clone = deepClone(original);
+
+    clone.nested.count = 2;
+
+    assertEquals(original.nested.count, 1);
+    assertEquals(clone.hasOwnProperty, 'shadowed');
+  });
+
+  await test('deepClone supports objects with a null prototype', () => {
+    const original = Object.create(null);
+    original.user = { name: 'Ana' };
+
+    const clone = deepClone(original);
+    clone.user.name = 'Bea';
+
+    assertEquals(original.user.name, 'Ana');
+    assertEquals(Object.getPrototypeOf(clone), null);
+  });
+
   console.log('=== daysBetween ===');
 
   await test('daysBetween returns positive day difference', () => {
@@ -185,6 +290,11 @@ async function runTests() {
 
   await test('daysBetween returns negative day difference', () => {
     assertEquals(daysBetween('2024-01-04', '2024-01-01'), -3);
+  });
+
+  await test('daysBetween compares timestamps at UTC day granularity', () => {
+    assertEquals(daysBetween('2024-01-01T23:00:00Z', '2024-01-02T01:00:00Z'), 1);
+    assertEquals(daysBetween('2024-01-02T01:00:00Z', '2024-01-01T23:00:00Z'), -1);
   });
 
   console.log('=== daysUntil ===');
@@ -197,6 +307,13 @@ async function runTests() {
   await test('daysUntil returns negative days for a past date', () => {
     const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString();
     assertEquals(daysUntil(fourDaysAgo), -4);
+  });
+
+  await test('daysUntil uses day-level comparison for date-only values', async () => {
+    await withMockedNow('2024-01-01T23:00:00Z', () => {
+      assertEquals(daysUntil('2024-01-02'), 1);
+      assertEquals(daysUntil('2023-12-31'), -1);
+    });
   });
 
   console.log('=== normalizeString ===');
@@ -259,18 +376,30 @@ async function runTests() {
     });
   });
 
+  await test('groupBy safely handles dangerous property names', () => {
+    const items = [
+      { type: '__proto__', id: 1 },
+      { type: 'constructor', id: 2 }
+    ];
+    const grouped = groupBy(items, 'type');
+
+    assertEquals(Object.getPrototypeOf(grouped), null);
+    assertEquals(grouped['__proto__'], [{ type: '__proto__', id: 1 }]);
+    assertEquals(grouped.constructor, [{ type: 'constructor', id: 2 }]);
+  });
+
   console.log('=== debounce ===');
 
   await test('debounce delays execution until after the delay', async () => {
     let callCount = 0;
     const debounced = debounce(() => {
       callCount++;
-    }, 20);
+    }, 30);
 
-    debounced();
+    assertEquals(debounced(), undefined);
     assertEquals(callCount, 0);
 
-    await wait(30);
+    await waitFor(() => callCount === 1);
     assertEquals(callCount, 1);
   });
 
@@ -280,15 +409,35 @@ async function runTests() {
     const debounced = debounce(value => {
       receivedValue = value;
       callCount++;
-    }, 20);
+      return value;
+    }, 30);
 
     debounced('first');
     debounced('second');
     debounced('final');
 
-    await wait(30);
+    await waitFor(() => callCount === 1);
     assertEquals(callCount, 1);
     assertEquals(receivedValue, 'final');
+  });
+
+  await test('debounce preserves caller context for object methods', async () => {
+    const counter = {
+      value: 1,
+      increment(amount) {
+        this.value += amount;
+        return this.value;
+      }
+    };
+
+    counter.debouncedIncrement = debounce(counter.increment, 30);
+
+    assertEquals(counter.debouncedIncrement(2), undefined);
+    await waitFor(() => counter.value === 3);
+
+    assertEquals(counter.debouncedIncrement(4), 3);
+    await waitFor(() => counter.value === 7);
+    assertEquals(counter.value, 7);
   });
 
   console.log('\n=== Summary ===');
