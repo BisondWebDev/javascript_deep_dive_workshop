@@ -1,5 +1,4 @@
 // Utility functions for the Task Management System
-// Your job: Implement these utility functions
 
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -259,6 +258,11 @@ function debounce(func, delay) {
   };
 }
 
+// Additional utility function to find a task by a specific key-value pair
+function findTaskBy(keyToFind, valueToFind) {
+  return tasks.find(task => task[keyToFind] === valueToFind);
+}
+
 // Export functions
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
@@ -273,6 +277,7 @@ if (typeof module !== 'undefined' && module.exports) {
     isEmptyObject,
     getNestedValue,
     groupBy,
-    debounce
+    debounce,
+    findTaskBy
   };
 }
