@@ -1,13 +1,17 @@
 // Task Management System - Main Implementation
-// Import data and utilities (uncomment when ready to test)
-const { users, projects, tasks } = require('./data');
+// Import data and utilities
+const sampleData = require('./data');
 const { validateUser, validateTask, validateProject } = require('./validators');
-const { generateId, isOverdue, priorityValue, deepClone, findTaskBy } = require('./utils');
+const { generateId, isOverdue, priorityValue, deepClone } = require('./utils');
 
-// For now, we'll work with the sample data directly
-let users = [];
-let projects = [];
-let tasks = [];
+// Work with a cloned copy of the sample data so tests do not mutate the source data.
+let users = deepClone(sampleData.users);
+let projects = deepClone(sampleData.projects);
+let tasks = deepClone(sampleData.tasks);
+
+function findTaskBy(keyToFind, valueToFind) {
+  return tasks.find(task => task[keyToFind] === valueToFind);
+}
 
 // ==================== TASK CRUD OPERATIONS ====================
 
@@ -170,8 +174,8 @@ function getTasks(filters = {}) {
 function searchTasks(keyword) {
   const lowerKeyword = keyword.toLowerCase();
   return tasks.filter(task => 
-    task.title.toLowerCase().includes(lowerKeyword) || 
-    task.description.toLowerCase().includes(lowerKeyword)
+    (task.title || '').toLowerCase().includes(lowerKeyword) || 
+    (task.description || '').toLowerCase().includes(lowerKeyword)
   );
 }
 
@@ -200,7 +204,35 @@ function getOverdueTasks() {
  * Hint: Don't forget to create a new array (spread operator or slice())
  */
 function sortTasks(tasks, sortBy, order = 'asc') {
-  // TODO: Implement sorting
+  const sortedTasks = [...tasks];
+
+  sortedTasks.sort((taskA, taskB) => {
+    let valueA = taskA[sortBy];
+    let valueB = taskB[sortBy];
+
+    if (sortBy === 'priority') {
+      valueA = priorityValue(valueA);
+      valueB = priorityValue(valueB);
+    } else if (sortBy === 'dueDate' || sortBy === 'createdAt') {
+      valueA = new Date(valueA).getTime();
+      valueB = new Date(valueB).getTime();
+    } else if (sortBy === 'title') {
+      valueA = valueA.toLowerCase();
+      valueB = valueB.toLowerCase();
+    }
+
+    if (valueA < valueB) {
+      return order === 'desc' ? 1 : -1;
+    }
+
+    if (valueA > valueB) {
+      return order === 'desc' ? -1 : 1;
+    }
+
+    return 0;
+  });
+
+  return sortedTasks;
 }
 
 // ==================== PROJECT & USER QUERIES ====================
@@ -502,9 +534,14 @@ if (typeof module !== 'undefined' && module.exports) {
     removeTagFromTask,
 
     // Data access (for testing)
-    getTasks: () => tasks,
-    getProjects: () => projects,
-    getUsers: () => users
+    // I changed thit to getAll because the test " Filter tasks by status" was failing
+    // LLMs explain was:When the getTasks: () => tasks, the export object had two getTasks keys. 
+    // In JavaScript objects, the later one wins, so the bottom one overwrote the real filter function. 
+    // After that, taskManager.getTasks({ status: 'in-progress' }) ignored the filter and returned all tasks, 
+    // which made this assertion fail
+    getAllTasks: () => tasks,
+    getAllProjects: () => projects,
+    getAllUsers: () => users
   };
 }
 
